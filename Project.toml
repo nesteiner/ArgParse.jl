@@ -1,0 +1,9 @@
+name = "ArgParse"
+uuid = "648f100e-604c-4dfc-8289-f7e4be61c6b1"
+authors = ["steiner <steiner3044@163.com>"]
+version = "0.1.0"
+
+[deps]
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TextWrap = "b718987f-49a8-5099-9789-dcd902bef87d"

@@ -1,0 +1,90 @@
+* ArgParse
+** Usage
+#+begin_src julia
+  ARGS = ["--arg1", "1", "--arg2", "hello", "world", "--flag1", "-f", "-a", "1.0"]
+
+  args = [Argument(Int, name = "arg1", long = "--arg1", help = "arg1", default = 0),
+          Argument(Vector{String}, name = "arg2", long = "--arg2", help = "arg2", default = String[]),
+          Argument(String, name = "arg3", long = "--arg3", help = "arg3", default = "arg3", required = false),
+          Argument(Float64, name = "arg4", short = "-a", help = "arg4", default = 0.0)]
+  
+  flags = [Flag(name = "flag1", long = "--flag1", help = "flag1"),
+           Flag(name = "flag2", short = "-f", help = "flag2")]
+  
+  dict = parseArgsAndFlags(original = ARGS, args = args, flags = flags)
+  println(dict)
+
+#+end_src
+
+#+begin_src julia
+  Dict{String, Any}(
+    "arg1" => 1,
+    "flag1" => true,
+    "arg2" => ["hello", "world"],
+    "arg3" => "arg3", "arg4" => 1.0,
+    "flag2" => true)
+#+end_src
+** Struct
+*** Argument
+#+begin_src julia
+  struct Argument{T}
+    name::String
+    short::Union{String, Nothing}
+    long::Union{String, Nothing}
+    default::T
+    help::String
+    required::Bool
+
+    function Argument(E::DataType;
+                      name::String,
+                      short::Union{String, Nothing} = nothing,
+                      long::Union{String, Nothing} = nothing,
+                      default::T,
+                      help::String,
+                      required::Bool = false) where T
+
+      @assert !isnothing(short) || !isnothing(long) "short or long must be non null"
+      return new{E}(
+        name,
+        short,
+        long,
+        default,
+        help,
+        required
+      )
+    end
+
+  end
+
+  eltype(arg::Argument{T}) where T = T
+#+end_src
+*** Flag
+#+begin_src julia
+  struct Flag
+    name::String
+    short::Union{String, Nothing}
+    long::Union{String, Nothing}
+    help::String
+    required::Bool
+
+    function Flag(;
+                  name::String,
+                  short::Union{String, Nothing} = nothing,
+                  long::Union{String, Nothing} = nothing,
+                  help::String,
+                  required::Bool = false)
+
+      @assert !isnothing(short) || !isnothing(long) "short or long must be non null"
+      return new(
+        name,
+        short,
+        long,
+        help,
+        required
+      )
+    end
+  end
+#+end_src
+
+** 最后
+这个项目还有很多不足，希望大家多多提 ISSUE ，我会尽快解决
